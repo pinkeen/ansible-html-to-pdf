@@ -1,0 +1,18 @@
+- name: Install docker
+  yum: name=docker state=present
+
+- name: Install python docker bindings for ansible
+  yum: name=docker-python state=present
+
+- name: Start and enable docker daemon
+  service: name=docker state=started enabled=yes
+
+- name: Pull docker iamge
+  docker_image:
+    name: "pink33n/html-to-pdf:{{ htmltopdf_version }}"
+
+- name: Copy the wrapper script
+  template:
+    src: html-to-pdf
+    dest: /usr/bin/html-to-pdf
+    mode: 0755
