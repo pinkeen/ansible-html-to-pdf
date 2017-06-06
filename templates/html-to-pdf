@@ -4,13 +4,4 @@ set -e
 URL=$1
 OUT=$2
 
-function rand() {
-  < /dev/urandom tr -dc A-Z-a-z-0-9 | head -c${1:-32};echo;
-}
-
-TMP="$(rand).pdf"
-
-[ -d '/tmp/html-to-pdf' ] || mkdir /tmp/html-to-pdf
-
-docker run -v /tmp/html-to-pdf:/tmp/html-to-pdf --privileged pink33n/html-to-pdf:{{ htmltopdf_version }} --url "${URL}" --pdf "${TMP}"
-mv "/tmp/html-to-pdf/${TMP}" "${OUT}"
+docker run -v "$(dirname $OUT):/tmp/html-to-pdf" --net=host --privileged pink33n/html-to-pdf:{{ htmltopdf_version }} --url "${URL}" --pdf "$(basename $OUT)"
